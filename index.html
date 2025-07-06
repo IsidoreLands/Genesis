@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project GENESIS: Doctrine & Order of Battle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #000000;
+            --text-color: #FFFFFF;
+            --border-color: #444444;
+            --accent-color-do: #00FF00;
+            --accent-color-be: #888888;
+            --container-bg: #0A0A0A;
+            --header-color: #87CEEB; /* A subtle sky blue for headers */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.7;
+            margin: 0;
+            padding: 2em 1em;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            padding: 2em 3em;
+            background-color: var(--container-bg);
+        }
+
+        .logo {
+            display: block;
+            width: 150px;
+            height: auto;
+            margin: 0 auto 3em auto;
+            filter: invert(1); /* Inverts the provided white logo to be visible on black */
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            color: var(--header-color);
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 2em;
+        }
+
+        h2 {
+            color: var(--header-color);
+            font-size: 1.4em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5em;
+            margin-top: 2.5em;
+        }
+        
+        h3 {
+             color: var(--header-color);
+             font-size: 1.2em;
+             margin-top: 2em;
+        }
+
+        p, ul, ol {
+            margin-bottom: 1.5em;
+        }
+        
+        strong {
+            font-weight: 700;
+            color: var(--accent-color-do);
+        }
+
+        code {
+            background-color: #1a1a1a;
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+        
+        pre {
+            background-color: #1a1a1a;
+            padding: 1.5em;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        blockquote {
+            font-style: italic;
+            border-left: 3px solid var(--border-color);
+            padding-left: 1.5em;
+            margin: 2.5em 0;
+            color: #bbbbbb;
+        }
+
+        table.doctrine-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2em;
+        }
+
+        table.doctrine-table th, table.doctrine-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        table.doctrine-table th {
+            background-color: #1a1a1a;
+            color: var(--header-color);
+        }
+        
+        #roll-call {
+            margin-top: 4em;
+            margin-bottom: 4em;
+            padding: 2em;
+            border: 1px solid var(--accent-color-do);
+            text-align: center;
+        }
+
+        #roll-call p {
+            font-size: 1.1em;
+        }
+        
+        a.button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 14px 28px;
+            font-weight: bold;
+            font-size: 1.1em;
+            border: 1px solid;
+            margin: 0.5em;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .path-do {
+            color: var(--accent-color-do);
+            border-color: var(--accent-color-do);
+        }
+
+        .path-do:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            color: #FFFFFF;
+        }
+        
+        .path-be {
+            color: var(--accent-color-be);
+            border-color: var(--accent-color-be);
+        }
+
+        .path-be:hover {
+            background-color: rgba(136, 136, 136, 0.1);
+            color: #FFFFFF;
+        }
+
+        details {
+            margin-top: 3em;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        summary {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: var(--header-color);
+            padding: 1em;
+            cursor: pointer;
+            background-color: #1a1a1a;
+        }
+        
+        .supplementary-content {
+            padding: 0 1.5em 1.5em 1.5em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- The user provided an all-white logo; the CSS filter inverts it to black for visibility on a white bg, or it would need to be re-exported. Assuming white is okay on the dark theme. -->
+        <img src="logo.png" alt="Project GENESIS Logo" class="logo">
+        
+        <h1>Project GENESIS Architectural Doctrine & Order of Battle (v3.0, Final)</h1>
+
+        <h2>PREAMBLE</h2>
+        <p>This document, version 3.0, is a living artifact evolved from rigorous review. It supersedes all previous versions. Its purpose is to provide not just a philosophy, but a clear, actionable command intent for the development of the GENESIS platform. Its principles are not optional; they are the laws by which we will avoid entropic collapse and achieve our mandate.</p>
+
+        <h2>1. The Mandate: Observe the Battlefield</h2>
+        <p>We are tasked with creating an integrated design, test, and manufacturing ecosystem. Our mandate is not to build a <i>simulator</i>, but to build a <b><i>foundry</i></b> for ideas—a platform where users can forge concepts, test them against a simulated reality, and manifest them in the physical world.</p>
+        <p>The primary threat to this mandate is not technical but entropic. History shows that complex, monolithic systems inevitably collapse under their own weight. Their internal complexity ("Drag") grows until their ability to adapt ("Maneuverability") approaches zero. They become rigid, brittle, and are outmaneuvered by more agile competitors.</p>
+        <p>Our prime directive is to build a system that actively resists this entropy. We will achieve this by architecting for <strong>superior Energy-Maneuverability</strong> at every level of the system's composition.</p>
+
+        <!-- The "To Be or To Do" Decision Point -->
+        <section id="roll-call">
+            <h2>A Roll Call</h2>
+            <blockquote>
+                “To be somebody or to do something. In life there is often a roll call. That’s when you will have to make a decision. To be or to do? Which way will you go?”
+            </blockquote>
+            <p>This is that fork in the road. Your title and background are irrelevant. Your willingness to engage with the reality of the problem is all that matters.</p>
+            <div>
+                <a href="https://github.com/IsidoreLands/FighterTraining/issues" class="button path-be" target="_blank" rel="noopener noreferrer">To Be.</a>
+                <a href="#onboarding-saga" class="button path-do">To Do.</a>
+            </div>
+        </section>
+
+        <!-- Main Body of the Doctrine -->
+        <h2>2. The Orienting Philosophy: Defining the E-M State</h2>
+        <p>Energy-Maneuverability (E-M) will be our objective measure of fitness for every component. An E-M Score is a function of three variables, refined to reflect the complex trade-offs inherent in engineering:</p>
+        <ul>
+            <li><strong>Ps - "Thrust":</strong> A measure of a component's <strong>capability density and performance</strong>.</li>
+            <li><strong>Agility - "Maneuverability":</strong> A measure of a component's <strong>adaptability and resilience to change</strong>.</li>
+            <li><strong>Drag - "Complexity":</strong> A measure of a component's <strong>total cost to maintain, understand, integrate, and secure</strong>.</li>
+        </ul>
+        <p>The governing formula is a living artifact, defined in the Supplementary Material. This is our primary law of survival.</p>
+
+        <h2>3. The Architectural Decision: A Federated, Polyglot Architecture</h2>
+        <p>Our architecture is a <strong>federated system of specialized services</strong>. The choice of technology for each component is subordinate to the E-M score that technology provides for its specific role.</p>
+        <table class="doctrine-table">
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Language</th>
+                    <th>Primary Task</th>
+                    <th>E-M Verdict</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Commander</b> (Front-End)</td>
+                    <td>TypeScript</td>
+                    <td>User Experience & API Orchestration</td>
+                    <td><strong>Optimal:</strong> Maximum Maneuverability for fast UI iteration.</td>
+                </tr>
+                <tr>
+                    <td><b>Engineer</b> (Back-End API)</td>
+                    <td>Python</td>
+                    <td>High-Level Design & Business Logic</td>
+                    <td><strong>Optimal:</strong> Maximum Maneuverability for scripting design logic via the vast CAD/SciPy ecosystem.</td>
+                </tr>
+                <tr>
+                    <td><b>Physicist</b> (Back-End Kernel)</td>
+                    <td>Rust</td>
+                    <td>Core Physics, Geometry & Simulation</td>
+                    <td><strong>Optimal:</strong> Maximum Thrust and safety for performance-critical computation.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. The Core Dialectic: The GENESIS Command & Control System</h2>
+        <p>Our advantage is our ability to maneuver in the cognitive domain. The OODA Loop is the engine of this process. Its outputs are formalized artifacts:</p>
+        <p><b>DECIDE → (Sagas) → ACT → (Echoes) → OBSERVE → (Heroes/Nemeses) → ORIENT → (Virtues/Vices) → DECIDE</b></p>
+        <p>This framework is not bureaucratic overhead; it is a clarification of the mental and operational processes required for high-tempo adaptation.</p>
+        
+        <h2>5. The Act: Implementation Guardrails & Command System</h2>
+        <p>This doctrine is enforced through the structure of our workflow and tooling.</p>
+        <ul>
+            <li><b>The PR Template is the Saga:</b> A Pull Request formalizes a Saga and its forecasted impact.</li>
+            <li><b>Automated Scoring is the Observer:</b> The CI/CD pipeline is an objective observer, providing the E-M Score as a primary Echo.</li>
+            <li><b>Peer Review is the Orient Session:</b> The automated score informs the peer review, where qualitative context is assessed.</li>
+            <li><b>Justified Overrides:</b> An E-M degrading merge (a Nemesis) may be permitted if justified as a strategic necessity. This action creates formal technical debt.</li>
+        </ul>
+
+        <h2>6. Doctrine Governance & Cultural Alignment</h2>
+        <p>This is a living document, subject to quarterly review. A culture that embraces this doctrine is paramount. Honesty is a Virtue; gaming metrics is a Nemesis. Leadership will be by action and example.</p>
+        
+        <p style="text-align:center; font-weight:bold; margin-top: 4em;">Maneuver is life. Execute.</p>
+
+        <!-- All supplementary and onboarding materials are nested here -->
+        <details>
+            <summary>SUPPLEMENTARY MATERIAL & ONBOARDING PROTOCOL</summary>
+            <div class="supplementary-content">
+                
+                <section id="onboarding-saga">
+                    <h2>The Onboarding Saga (GEN-001)</h2>
+                    <p>You have chosen "To Do." Welcome. Your first task is to complete an OODA Loop. Your objective is to understand the system, identify a single friction point (a <strong>Nemesis</strong>), and propose a solution (a new <strong>Saga</strong>).</p>
+                    
+                    <h3>Phase 1: OBSERVE</h3>
+                    <p>Choose one observation path to find an <strong>Echo</strong>—an undeniable piece of feedback. A <a href="#">Project Glossary</a> is available for all terms.</p>
+                    <ol>
+                        <li><b>Engineer's Path:</b> Clone, build, and run tests on the <code>genesis-api</code> repository. The output is your Echo.</li>
+                        <li><b>Designer's Path:</b> Perform a heuristic evaluation of the UI prototype. The usability issues are your Echo.</li>
+                        <li><b>Analyst's Path:</b> Review this doctrine. Ambiguities are your Echo.</li>
+                        <li><b>Communicator's Path:</b> Review project community channels. Gaps in communication are your Echo.</li>
+                    </ol>
+
+                    <h3>Phase 2 & 3: ORIENT & DECIDE</h3>
+                    <p>Analyze your Echo. Identify a Hero (strength) and a Nemesis (friction point). Decide on a concrete, actionable Saga to amplify a Virtue or destroy a Vice.</p>
+
+                    <h3>Phase 4: ACT</h3>
+                    <p>Formalize your new Saga by submitting it as a new "Issue" in our <a href="https://github.com/IsidoreLands/FighterTraining/issues" target="_blank">Community & Proposals Repository</a>, using the "Saga Proposal" template. A response is guaranteed within 72 hours. Your work has begun.</p>
+                </section>
+                
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 3em 0;">
+                
+                <h3>A. Canonical Architecture & Interfaces</h3>
+                <ul>
+                    <li><b>Repositories:</b> <code>genesis-frontend</code>, <code>genesis-api</code>, <code>genesis-kernel</code>.</li>
+                    <li><b>Interface Standardization:</b> Internal communication via <b>gRPC</b> (Protobufs in <code>genesis-protos</code> repo). External via <b>REST/GraphQL</b> (OpenAPI documented).</li>
+                </ul>
+
+                <h3>B. The GENESIS E-M Score Calculator (v2.0)</h3>
+                <p>The formula is a weighted model. Weights are configuration parameters tuned quarterly.</p>
+                <pre><code>
+def calculate_em_score(
+    # Ps Metrics (Thrust)
+    feature_benchmark_ops_sec: float,
+    baseline_benchmark_ops_sec: float,
+    # Maneuverability Metrics
+    avg_cyclomatic_complexity: float,
+    num_dependencies: int,
+    test_coverage_percent: float,
+    # Drag Metrics
+    lines_of_code: int,
+    lint_errors: int,
+    security_vulnerabilities: int,
+    # Weights (configurable per repository)
+    w_ps: float = 0.4,
+    w_maneuver: float = 0.4,
+    w_drag: float = 0.2
+) -> dict:
+    """Calculates an updated E-M score for a software component."""
+    # 1. Calculate Thrust (Ps)
+    ps_raw = feature_benchmark_ops_sec / baseline_benchmark_ops_sec if baseline_benchmark_ops_sec > 0 else 1.0
+    ps_norm = min(10.0, max(0.0, (ps_raw - 1) * 10 + 5))
+
+    # 2. Calculate Maneuverability
+    complexity_penalty = avg_cyclomatic_complexity * 0.5
+    dependency_penalty = num_dependencies * 0.2
+    coverage_bonus = (test_coverage_percent / 100) * 2.0
+    maneuver_raw = 10 - complexity_penalty - dependency_penalty + coverage_bonus
+    maneuver_norm = min(10.0, max(0.0, maneuver_raw))
+
+    # 3. Calculate Drag
+    drag_raw = (lines_of_code / 100) + (lint_errors * 0.5) + (security_vulnerabilities * 2.0)
+    drag_norm = min(10.0, max(0.0, drag_raw))
+
+    # 4. Final E-M Score
+    numerator = (w_ps * ps_norm) + (w_maneuver * maneuver_norm)
+    denominator = 1 + (w_drag * drag_norm)
+    final_score = numerator / denominator
+
+    return {
+        "EM_Score": round(final_score, 2),
+        "Thrust_norm": round(ps_norm, 2),
+        "Maneuverability_norm": round(maneuver_norm, 2),
+        "Drag_norm": round(drag_norm, 2)
+    }
+                </code></pre>
+            </div>
+        </details>
+    </div>
+
+</body>
+</html>
