@@ -6,73 +6,36 @@
     <title>To Be or To Do</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --background-color: #000000;
-            --text-color: #FFFFFF;
-            --accent-color: #00FF00; /* Unified green accent */
-            --subtle-text-color: #999999;
+            --accent-color: #00FF00;
         }
         html, body {
             height: 100%;
             margin: 0;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
         }
         body {
             background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: 'JetBrains Mono', monospace;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            max-width: 90vw; /* Use viewport width for responsiveness */
-            width: 800px;
-            padding: 2em;
-        }
-        .logo-container {
-            width: 100%;
-            margin-bottom: 2vh; /* Use viewport height for spacing */
-        }
-        .logo {
-            width: 100%; /* Logo will be as wide as the container */
-            height: auto;
-            max-width: 700px; /* Max width to prevent it from being huge on large screens */
-        }
-        figure {
-            margin: 0;
-        }
-        blockquote {
-            font-style: italic;
-            font-size: clamp(1em, 2.5vh, 1.2em); /* Responsive font size */
-            line-height: 1.7;
-            margin: 0;
-        }
-        figcaption {
-            font-size: clamp(0.9em, 2vh, 1.0em);
-            color: var(--subtle-text-color);
-            margin-top: 1.5em;
-            text-align: center; /* Centered attribution */
         }
         .decision-point {
-            margin-top: 4vh; /* Responsive spacing */
+            display: flex;
+            gap: 4em; /* Increase space between buttons */
         }
         .button {
             display: inline-block;
             text-decoration: none;
-            padding: 14px 28px;
-            font-weight: bold;
-            font-size: clamp(1em, 2.5vh, 1.2em);
-            border: 1px solid var(--accent-color);
+            padding: 16px 32px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.5em;
+            border: 2px solid var(--accent-color);
             color: var(--accent-color);
-            margin: 0 1em;
             transition: all 0.2s ease-in-out;
         }
         .button:hover {
@@ -81,68 +44,83 @@
         }
         #audio-controls {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.2s ease;
             z-index: 10;
         }
-        #audio-controls:hover { opacity: 1.0; }
-        .icon { display: none; }
-        .icon.active { display: inline-block; }
+        .icon {
+            width: 30px;
+            height: 30px;
+            fill: #777; /* Default subtle grey */
+            transition: fill 0.2s ease;
+        }
+        .icon:hover {
+            fill: #FFFFFF; /* Brighten on hover */
+        }
+        .icon.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-container">
-            <!-- The logo asset we will transfer next -->
-            <img src="ooda_wiki_logo.png" alt="OODA WIKI Logo" class="logo">
-        </div>
-        
-        <figure>
-            <blockquote>“To be somebody or to do something. In life there is often a roll call. That’s when you will have to make a decision. To be or to do? Which way will you go?”</blockquote>
-            <figcaption>— Col. John R. Boyd, United States Air Force</figcaption>
-        </figure>
-        
-        <div class="decision-point">
-            <!-- "To Be" button now uses the same style -->
-            <a href="https://en.wikipedia.org/wiki/Wikipedia" class="button" target="_blank" rel="noopener noreferrer">To Be.</a>
-            <a href="mailto:admin@ooda.wiki?subject=Request%20to%20Do%20(GENESIS)&body=I%20have%20made%20the%20decision%20to%20do%20something.%0A%0AI%20am%20ready%20for%20my%20first%20Saga." class="button">To Do.</a>
-        </div>
+    <div class="decision-point">
+        <a href="https://en.wikipedia.org/wiki/Wikipedia" class="button" target="_blank" rel="noopener noreferrer">To Be.</a>
+        <a href="mailto:admin@ooda.wiki?subject=Request%20to%20Do%20(GENESIS)&body=I%20have%20made%20the%20decision%20to%20do%20something.%0A%0AI%20am%20ready%20for%20my%20first%20Saga." class="button">To Do.</a>
     </div>
 
-    <audio id="boydQuoteAudio" src="boyd_quote.mp3" autoplay loop></audio>
-    <div id="audio-controls" onclick="toggleAudio()">
-        <!-- New, cleaner speaker icons -->
-        <svg id="icon-volume-up" class="icon active" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+    <!-- The audio element. 'muted' is removed to attempt autoplay with sound. -->
+    <audio id="boydQuoteAudio" src="boyd_quote.mp3" loop></audio>
+    <div id="audio-controls">
+        <!-- SVG icons are now simpler and controlled by a single function -->
+        <svg id="icon-volume" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/>
             <path d="M10 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 4a4 4 0 0 0-4 4H2a6 6 0 1 1 12 0h-2a4 4 0 0 0-4-4z"/>
         </svg>
-        <svg id="icon-mute" class="icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+        <svg id="icon-mute" class="icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.393-1.85a.5.5 0 0 1 .5-.099zM12.166 4.636a.5.5 0 0 1 .708 0l1.103 1.103a.5.5 0 0 1 0 .708l-1.103 1.103a.5.5 0 0 1-.708-.708L12.87 6.414l-1.104-1.104a.5.5 0 0 1 0-.708zm-2.122 0a.5.5 0 0 1 .708 0l1.103 1.103a.5.5 0 0 1 0 .708L11.46 7.525a.5.5 0 0 1-.708-.708L11.458 6.11l-1.103-1.103a.5.5 0 0 1 0-.708z"/>
         </svg>
     </div>
 
     <script>
         const audio = document.getElementById('boydQuoteAudio');
-        const iconVolume = document.getElementById('icon-volume-up');
+        const audioControl = document.getElementById('audio-controls');
+        const iconVolume = document.getElementById('icon-volume');
         const iconMute = document.getElementById('icon-mute');
 
-        function toggleAudio() {
-            audio.muted = !audio.muted;
-            if (audio.muted) {
-                iconVolume.classList.remove('active');
-                iconMute.classList.add('active');
-            } else {
-                iconVolume.classList.add('active');
-                iconMute.classList.remove('active');
+        // Function to attempt to play audio, returning a Promise
+        async function playAudio() {
+            try {
+                await audio.play();
+                audio.muted = false; // Explicitly unmute
+                updateIcons();
+            } catch (err) {
+                console.log('Autoplay was prevented. Waiting for user interaction.');
+                // Audio will play on first user click.
             }
         }
+
+        function updateIcons() {
+            if (audio.muted || audio.paused) {
+                iconVolume.classList.add('hidden');
+                iconMute.classList.remove('hidden');
+            } else {
+                iconVolume.classList.remove('hidden');
+                iconMute.classList.add('hidden');
+            }
+        }
+
+        audioControl.addEventListener('click', () => {
+            audio.muted = !audio.muted;
+            updateIcons();
+        });
+
+        // The 'canplaythrough' event is a reliable indicator that the audio is ready.
+        audio.addEventListener('canplaythrough', playAudio, { once: true });
         
-        // This workaround helps ensure autoplay works after user interaction.
-        document.body.addEventListener('click', () => { if (audio.paused) { audio.play(); } }, { once: true });
+        // A fallback for browsers that block autoplay until interaction
+        document.body.addEventListener('click', playAudio, { once: true });
     </script>
 </body>
 </html>
