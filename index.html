@@ -40,5 +40,37 @@
             <p><a href="doctrine.html">Review the Full Doctrine</a></p>
         </div>
     </div>
+
+    <!-- Audio Player and Controls -->
+    <audio id="boydQuoteAudio" src="boyd_quote.mp3" preload="auto"></audio>
+    <div id="audio-controls" onclick="toggleAudio()" style="position: fixed; bottom: 20px; right: 20px; cursor: pointer; opacity: 0.5; transition: opacity 0.2s ease;">
+        <!-- Mute Icon SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/>
+          <path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM6.5 4.5v.39l-1-1V4.5a.5.5 0 0 1 1 0zm-.5 4.14 5 5 .707-.707-5-5-.707.707zM4.5 4.5a.5.5 0 0 1 .5.5v3.16l-2 2V5a.5.5 0 0 1 .5-.5z"/>
+        </svg>
+    </div>
+
+    <script>
+        const audio = document.getElementById('boydQuoteAudio');
+        const audioControl = document.getElementById('audio-controls');
+        
+        audioControl.addEventListener('mouseenter', () => { audioControl.style.opacity = '1.0'; });
+        audioControl.addEventListener('mouseleave', () => { audioControl.style.opacity = '0.5'; });
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                // SVG for Volume Up Icon
+                audioControl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM4.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0v-15a.5.5 0 0 1 .5-.5z"/></svg>';
+            } else {
+                audio.pause();
+                audio.currentTime = 0; // Rewind on mute
+                // SVG for Mute Icon
+                audioControl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM6.5 4.5v.39l-1-1V4.5a.5.5 0 0 1 1 0zm-.5 4.14 5 5 .707-.707-5-5-.707.707zM4.5 4.5a.5.5 0 0 1 .5.5v3.16l-2 2V5a.5.5 0 0 1 .5-.5z"/></svg>';
+            }
+        }
+    </script>
+</body>
 </body>
 </html>
