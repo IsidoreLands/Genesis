@@ -3,74 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project GENESIS: A Roll Call</title>
+    <title>To Be or To Do</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --background-color: #000000; --text-color: #FFFFFF; --border-color: #444444; --accent-color-do: #00FF00; --accent-color-be: #888888; --header-color: #87CEEB; }
-        body { background-color: var(--background-color); color: var(--text-color); font-family: 'JetBrains Mono', monospace; line-height: 1.8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 2em; }
-        .container { max-width: 800px; border: 1px solid var(--border-color); padding: 2em 3em; background-color: #0A0A0A; }
-        h1 { color: var(--header-color); font-size: 1.8em; text-align: center; margin-bottom: 1.5em; letter-spacing: 2px; }
-        p { margin-bottom: 1.5em; }
-        blockquote { font-style: italic; border-left: 3px solid var(--border-color); padding-left: 1.5em; margin: 2em 0; color: #bbbbbb; }
-        .decision-point { margin-top: 3em; text-align: center; }
-        .button { display: inline-block; text-decoration: none; padding: 14px 28px; font-weight: bold; font-size: 1.1em; border: 1px solid; margin: 0.5em; transition: all 0.2s ease-in-out; }
-        .path-do { color: var(--accent-color-do); border-color: var(--accent-color-do); }
-        .path-do:hover { background-color: rgba(0, 255, 0, 0.1); color: #FFFFFF; }
-        .path-be { color: var(--accent-color-be); border-color: var(--accent-color-be); }
-        .path-be:hover { background-color: rgba(136, 136, 136, 0.1); color: #FFFFFF; }
-        .footer-nav { margin-top: 3em; text-align: center; font-size: 0.9em; color: #888; }
-        .footer-nav a { color: var(--accent-color-be); text-decoration: none; }
-        .footer-nav a:hover { text-decoration: underline; }
+        :root {
+            --background-color: #000000;
+            --text-color: #FFFFFF;
+            --border-color-be: #888888;
+            --accent-color-do: #00FF00;
+        }
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2em;
+        }
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+        blockquote {
+            font-style: italic;
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: var(--text-color);
+            margin: 0 0 3em 0;
+            padding: 0;
+            border: none; /* Removed the left border */
+        }
+        .decision-point {
+            margin-top: 2em;
+        }
+        .button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 14px 28px;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 1px solid;
+            margin: 0 1em;
+            transition: all 0.2s ease-in-out;
+        }
+        .path-do {
+            color: var(--accent-color-do);
+            border-color: var(--accent-color-do);
+        }
+        .path-do:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        .path-be {
+            color: var(--border-color-be);
+            border-color: var(--border-color-be);
+        }
+        .path-be:hover {
+            background-color: rgba(136, 136, 136, 0.1);
+        }
+        #audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        #audio-controls:hover {
+            opacity: 1.0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="logo.png" alt="GENESIS Logo" style="display: block; width: 150px; margin: 0 auto 3em auto;">
-        <h1>A Roll Call</h1>
-        <p>In life, there comes a fork in the road. A decision must be made.</p>
         <blockquote>“To be somebody or to do something. In life there is often a roll call. That’s when you will have to make a decision. To be or to do? Which way will you go?”</blockquote>
         <div class="decision-point">
-            <p>Your background is irrelevant. Your intent is all that matters. A roll call is being taken.</p>
-            <a href="https://github.com/IsidoreLands/Genesis/issues" class="button path-be" target="_blank" rel="noopener noreferrer">To Be.</a>
+            <a href="https://en.wikipedia.org/wiki/Wikipedia" class="button path-be" target="_blank" rel="noopener noreferrer">To Be.</a>
             <a href="mailto:admin@ooda.wiki?subject=Request%20to%20Do%20(GENESIS)&body=I%20have%20made%20the%20decision%20to%20do%20something.%0A%0AI%20am%20ready%20for%20my%20first%20Saga." class="button path-do">To Do.</a>
         </div>
-        <div class="footer-nav">
-            <p><a href="doctrine.html">Review the Full Doctrine</a></p>
+    </div>
+
+    <!-- Audio now autoplays, controls are for muting -->
+    <audio id="boydQuoteAudio" src="boyd_quote.mp3" autoplay loop></audio>
+    <div id="audio-controls" onclick="toggleAudio()">
+        <!-- Default icon is Volume Up, since it autoplays -->
+        <svg id="icon-volume-up" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16" style="display: inline;">
+            <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM4.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0v-15a.5.5 0 0 1 .5-.5z"/>
+        </svg>
+        <!-- Mute Icon is hidden by default -->
+        <svg id="icon-mute" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+            <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM6.5 4.5v.39l-1-1V4.5a.5.5 0 0 1 1 0zm-.5 4.14 5 5 .707-.707-5-5-.707.707zM4.5 4.5a.5.5 0 0 1 .5.5v3.16l-2 2V5a.5.5 0 0 1 .5-.5z"/>
+        </svg>
+    </div>
+    
+    <script>
+        const audio = document.getElementById('boydQuoteAudio');
+        const iconVolume = document.getElementById('icon-volume-up');
+        const iconMute = document.getElementById('icon-mute');
+
+        // Browsers often block autoplay until the user interacts with the page.
+        // This is a common workaround to start audio after the first click anywhere.
+        document.body.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+            }
+        }, { once: true });
+
+        function toggleAudio() {
+            if (audio.muted) {
+                audio.muted = false;
+                iconVolume.style.display = 'inline';
+                iconMute.style.display = 'none';
+            } else {
+                audio.muted = true;
+                iconVolume.style.display = 'none';
+                iconMute.style.display = 'inline';
+            }
+        }
+        // Update icon based on initial state
+        if (audio.muted) { toggleAudio(); toggleAudio(); } // cheap trick to set initial icon state
+    </script>
+</body>
+</html>1~<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Be or To Do</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #000000;
+            --text-color: #FFFFFF;
+            --border-color-be: #888888;
+            --accent-color-do: #00FF00;
+        }
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2em;
+        }
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+        blockquote {
+            font-style: italic;
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: var(--text-color);
+            margin: 0 0 3em 0;
+            padding: 0;
+            border: none; /* Removed the left border */
+        }
+        .decision-point {
+            margin-top: 2em;
+        }
+        .button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 14px 28px;
+            font-weight: bold;
+            font-size: 1.2em;
+            border: 1px solid;
+            margin: 0 1em;
+            transition: all 0.2s ease-in-out;
+        }
+        .path-do {
+            color: var(--accent-color-do);
+            border-color: var(--accent-color-do);
+        }
+        .path-do:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        .path-be {
+            color: var(--border-color-be);
+            border-color: var(--border-color-be);
+        }
+        .path-be:hover {
+            background-color: rgba(136, 136, 136, 0.1);
+        }
+        #audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        #audio-controls:hover {
+            opacity: 1.0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <blockquote>“To be somebody or to do something. In life there is often a roll call. That’s when you will have to make a decision. To be or to do? Which way will you go?”</blockquote>
+        <div class="decision-point">
+            <a href="https://en.wikipedia.org/wiki/Wikipedia" class="button path-be" target="_blank" rel="noopener noreferrer">To Be.</a>
+            <a href="mailto:admin@ooda.wiki?subject=Request%20to%20Do%20(GENESIS)&body=I%20have%20made%20the%20decision%20to%20do%20something.%0A%0AI%20am%20ready%20for%20my%20first%20Saga." class="button path-do">To Do.</a>
         </div>
     </div>
 
-    <!-- Audio Player and Controls -->
-    <audio id="boydQuoteAudio" src="boyd_quote.mp3" preload="auto"></audio>
-    <div id="audio-controls" onclick="toggleAudio()" style="position: fixed; bottom: 20px; right: 20px; cursor: pointer; opacity: 0.5; transition: opacity 0.2s ease;">
-        <!-- Mute Icon SVG -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/>
-          <path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM6.5 4.5v.39l-1-1V4.5a.5.5 0 0 1 1 0zm-.5 4.14 5 5 .707-.707-5-5-.707.707zM4.5 4.5a.5.5 0 0 1 .5.5v3.16l-2 2V5a.5.5 0 0 1 .5-.5z"/>
+    <!-- Audio now autoplays, controls are for muting -->
+    <audio id="boydQuoteAudio" src="boyd_quote.mp3" autoplay loop></audio>
+    <div id="audio-controls" onclick="toggleAudio()">
+        <!-- Default icon is Volume Up, since it autoplays -->
+        <svg id="icon-volume-up" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16" style="display: inline;">
+            <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM4.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0v-15a.5.5 0 0 1 .5-.5z"/>
+        </svg>
+        <!-- Mute Icon is hidden by default -->
+        <svg id="icon-mute" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+            <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM6.5 4.5v.39l-1-1V4.5a.5.5 0 0 1 1 0zm-.5 4.14 5 5 .707-.707-5-5-.707.707zM4.5 4.5a.5.5 0 0 1 .5.5v3.16l-2 2V5a.5.5 0 0 1 .5-.5z"/>
         </svg>
     </div>
-
+    
     <script>
         const audio = document.getElementById('boydQuoteAudio');
-        const audioControl = document.getElementById('audio-controls');
-        
-        audioControl.addEventListener('mouseenter', () => { audioControl.style.opacity = '1.0'; });
-        audioControl.addEventListener('mouseleave', () => { audioControl.style.opacity = '0.5'; });
+        const iconVolume = document.getElementById('icon-volume-up');
+        const iconMute = document.getElementById('icon-mute');
 
-        function toggleAudio() {
+        // Browsers often block autoplay until the user interacts with the page.
+        // This is a common workaround to start audio after the first click anywhere.
+        document.body.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
-                // SVG for Volume Up Icon
-                audioControl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM4.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0v-15a.5.5 0 0 1 .5-.5z"/></svg>';
+            }
+        }, { once: true });
+
+        function toggleAudio() {
+            if (audio.muted) {
+                audio.muted = false;
+                iconVolume.style.display = 'inline';
+                iconMute.style.display = 'none';
             } else {
-                audio.pause();
-                audio.currentTime = 0; // Rewind on mute
-                // SVG for Mute Icon
-                audioControl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"><path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-1.414 1.414A6.476 6.476 0 0 1 12.025 8a6.476 6.476 0 0 1-1.903 4.596l1.414 1.414zM10.121 12.596A4.486 4.486 0 0 0 11.025 8a4.486 4.486 0 0 0-.904-2.596l-1.414 1.414A2.488 2.488 0 0 1 9.025 8a2.488 2.488 0 0 1-.318.991l1.414 1.605z"/><path d="M8.707 11.182A1 1 0 0 0 8.025 8a1 1 0 0 0-.682-1.182L6.225 8.165 8.707 11.182zM6.5 4.5v.39l-1-1V4.5a.5.5 0 0 1 1 0zm-.5 4.14 5 5 .707-.707-5-5-.707.707zM4.5 4.5a.5.5 0 0 1 .5.5v3.16l-2 2V5a.5.5 0 0 1 .5-.5z"/></svg>';
+                audio.muted = true;
+                iconVolume.style.display = 'none';
+                iconMute.style.display = 'inline';
             }
         }
+        // Update icon based on initial state
+        if (audio.muted) { toggleAudio(); toggleAudio(); } // cheap trick to set initial icon state
     </script>
-</body>
 </body>
 </html>
