@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OODA WIKI | Final Animation</title>
+    <title>To Be or To Do | OODA WIKI</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; }
+        :root {
+            --background-color: #000000;
+            --accent-color: #00FF00;
+            --muted-color: #555555;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--background-color);
+        }
         .layer {
             position: absolute;
             top: 0;
@@ -14,7 +29,8 @@
             height: 100%;
             overflow: hidden;
         }
-        /* Layer 3: Farthest Back (CSS Animated Background) */
+        
+        /* --- Background Animation Layers (Unchanged) --- */
         #css-animated-bg {
             background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
             background-color: #050A10;
@@ -25,96 +41,131 @@
             from { background-position: 0 0; }
             to { background-position: -1024px 1024px; }
         }
-
-        /* Layer 2: Main three.js scene (Logo + Afterburner) */
         #three-js-canvas { z-index: 2; }
-
-        /* Layer 1: Interactive particles.js foreground */
         #particles-js-fg { z-index: 3; }
+
+        /* --- NEW: Foreground UI Layer --- */
+        #ui-layer {
+            z-index: 100; /* High z-index to guarantee it's on top */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Push buttons to the bottom */
+            align-items: center; /* Center buttons horizontally */
+            padding-bottom: 10vh;
+            box-sizing: border-box;
+            /* This allows mouse interactions to pass through the empty parts of this layer to the particles.js canvas below */
+            pointer-events: none; 
+        }
+        
+        /* --- UI Element Styling --- */
+        .decision-point {
+            display: flex;
+            gap: 4em;
+            pointer-events: auto; /* IMPORTANT: Re-enable pointer events for the buttons themselves */
+        }
+        .button {
+            display: inline-block;
+            text-decoration: none;
+            padding: 16px 32px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.5em;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            transition: all 0.2s ease-in-out;
+        }
+        .button:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+            color: #FFFFFF;
+        }
+        #audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 25px;
+            cursor: pointer;
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--muted-color);
+            transition: color 0.2s ease-in-out;
+            user-select: none;
+            z-index: 101; /* Ensure it's on top of the UI layer */
+            pointer-events: auto; /* Ensure it's always clickable */
+        }
+        #audio-controls:hover {
+            color: #FFFFFF;
+        }
+        #audio-controls.playing {
+            color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
-    <!-- The three-layer structure -->
+
+    <!-- Background Animation Layers -->
     <div id="css-animated-bg" class="layer"></div>
     <div id="three-js-canvas" class="layer"></div>
     <div id="particles-js-fg" class="layer"></div>
 
-    <!-- NOTE: We must use the modern importmap structure to support the afterburner code exactly. -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"
-        }
-    }
-    </script>
+    <!-- NEW: Dedicated UI Layer, guaranteed to be on top -->
+    <div id="ui-layer" class="layer">
+        <div class="decision-point" id="decisionPoint">
+            <a href="https://en.wikipedia.org/wiki/Wikipedia" class="button" target="_blank" rel="noopener noreferrer">To Be.</a>
+            <a href="mailto:admin@ooda.wiki?subject=Request%20to%20Do%20(GENESIS)&body=I%20have%20made%20the%20decision%20to%20do%20something.%0A%0AI%20am%20ready%20for%20my%20first%20Saga." class="button">To Do.</a>
+        </div>
+    </div>
     
-    <!-- The `particles.js` library script -->
+    <!-- Audio controls are also part of the UI -->
+    <div id="audio-controls" title="Toggle Audio">♪</div>
+    
+    <!-- Non-visual elements -->
+    <audio id="boydQuoteAudio" src="boyd_quote.mp3" loop></audio>
+    
+    <!-- --- SCRIPTING LIBRARIES --- -->
+    <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" } }
+    </script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
-    <!-- This is the Three.js afterburner script, transplanted and adapted for layering -->
+    <!-- --- THREE.JS ANIMATION SCRIPT (Unchanged) --- -->
     <script type="module">
         import * as THREE from 'three';
-        
-        // This entire block of code is from your preferred afterburner example.
-        // Only the renderer setup has been slightly modified to fit the layers.
-
-        // --- CONFIGURATION ---
+        const container = document.getElementById('three-js-canvas');
+        let scene, camera, renderer, clock;
+        let flameParticles, smokeParticles;
+        let startPositions;
         const LOGO_URL = './OODA Genesis Transparent.png';
         const LOGO_WIDTH = 8;
-        
-        // --- Flame Particles ---
         const FLAME_PARTICLE_COUNT = 80000;
         const FLAME_SPEED = 0.1;
         const FLAME_COLORS = [new THREE.Color(0xffffff), new THREE.Color(0xffaa00), new THREE.Color(0xff4400)];
         const FLAME_TRAIL_LENGTH = 15.0;
-
-        // --- Smoke Particles ---
         const SMOKE_PARTICLE_COUNT = 80000;
         const SMOKE_SPEED = 0.08;
         const SMOKE_COLORS = [new THREE.Color(0xffffff), new THREE.Color(0x5A6468), new THREE.Color(0x88aaff)];
         const SMOKE_TRAIL_LENGTH = 25.0;
-
-        // --- SETUP ---
-        const container = document.getElementById('three-js-canvas'); // Target the correct div
-        let scene, camera, renderer, clock;
-        let flameParticles, smokeParticles;
-        let startPositions;
-
         function init() {
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 10;
-            
-            // --- MODIFIED RENDERER SETUP ---
-            // These settings are critical for placing it in the multi-layer structure.
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); // alpha:true is essential
-            renderer.setClearColor(0x000000, 0); // Makes the canvas background transparent
-            // --- END MODIFICATION ---
-
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setClearColor(0x000000, 0);
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            
-            container.appendChild(renderer.domElement); // Append to our specific container div
-
+            container.appendChild(renderer.domElement);
             clock = new THREE.Clock();
             loadLogoAndInitSimulation();
             window.addEventListener('resize', onWindowResize);
         }
-
-        // --- ALL FUNCTIONS BELOW ARE IDENTICAL TO YOUR PREFERRED EXAMPLE ---
-
         function loadLogoAndInitSimulation() {
             const textureLoader = new THREE.TextureLoader();
             textureLoader.load(LOGO_URL, (texture) => {
                 texture.minFilter = THREE.LinearFilter;
                 texture.magFilter = THREE.LinearFilter;
-
                 const logoAspect = texture.image.width / texture.image.height;
                 const logoHeight = LOGO_WIDTH / logoAspect;
                 const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthTest: false });
                 const logoPlane = new THREE.Mesh(new THREE.PlaneGeometry(LOGO_WIDTH, logoHeight), logoMaterial);
                 scene.add(logoPlane);
-
                 const image = texture.image;
                 const canvas = document.createElement('canvas');
                 canvas.width = image.width;
@@ -122,7 +173,6 @@
                 const context = canvas.getContext('2d');
                 context.drawImage(image, 0, 0);
                 const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                
                 const positions = [];
                 const density = 1;
                 for (let y = 0; y < canvas.height; y += density) {
@@ -133,89 +183,62 @@
                     }
                 }
                 startPositions = new Float32Array(positions);
-
                 createFlameParticles();
                 createSmokeParticles();
                 animate();
-            }, undefined, (err) => {
-                console.error('Error loading logo.', err);
-            });
+            }, undefined, (err) => { console.error('Error loading logo.', err); });
         }
-
         function createFlameParticles() {
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(FLAME_PARTICLE_COUNT * 3);
             const colors = new Float32Array(FLAME_PARTICLE_COUNT * 3);
             const initialVelocities = new Float32Array(FLAME_PARTICLE_COUNT * 3);
-
             for (let i = 0; i < FLAME_PARTICLE_COUNT; i++) {
                 const i3 = i * 3;
                 const randomIndex = Math.floor(Math.random() * (startPositions.length / 3)) * 3;
                 positions[i3] = startPositions[randomIndex];
                 positions[i3 + 1] = startPositions[randomIndex + 1];
                 positions[i3 + 2] = Math.random() * -FLAME_TRAIL_LENGTH;
-                
                 const color = FLAME_COLORS[Math.floor(Math.random() * FLAME_COLORS.length)];
                 colors[i3] = color.r; colors[i3 + 1] = color.g; colors[i3 + 2] = color.b;
-
                 initialVelocities[i3] = (Math.random() - 0.5) * 0.01;
                 initialVelocities[i3 + 1] = (Math.random() - 0.5) * 0.01;
                 initialVelocities[i3 + 2] = -FLAME_SPEED;
             }
-
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
             geometry.setAttribute('initialVelocity', new THREE.BufferAttribute(initialVelocities, 3));
-
-            const material = new THREE.PointsMaterial({
-                size: 0.04, vertexColors: true, blending: THREE.AdditiveBlending, 
-                transparent: true, depthWrite: false, opacity: 0.8,
-                map: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/sprites/spark1.png')
-            });
-
+            const material = new THREE.PointsMaterial({ size: 0.04, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false, opacity: 0.8, map: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/sprites/spark1.png') });
             flameParticles = new THREE.Points(geometry, material);
             scene.add(flameParticles);
         }
-
         function createSmokeParticles() {
             const geometry = new THREE.BufferGeometry();
             const positions = new Float32Array(SMOKE_PARTICLE_COUNT * 3);
             const colors = new Float32Array(SMOKE_PARTICLE_COUNT * 3);
             const initialVelocities = new Float32Array(SMOKE_PARTICLE_COUNT * 3);
-
             for (let i = 0; i < SMOKE_PARTICLE_COUNT; i++) {
                 const i3 = i * 3;
                 const randomIndex = Math.floor(Math.random() * (startPositions.length / 3)) * 3;
                 positions[i3] = startPositions[randomIndex];
                 positions[i3 + 1] = startPositions[randomIndex + 1];
                 positions[i3 + 2] = Math.random() * -SMOKE_TRAIL_LENGTH;
-
                 const color = SMOKE_COLORS[Math.floor(Math.random() * SMOKE_COLORS.length)];
                 colors[i3] = color.r; colors[i3 + 1] = color.g; colors[i3 + 2] = color.b;
-
                 initialVelocities[i3] = (Math.random() - 0.5) * 0.02;
                 initialVelocities[i3 + 1] = (Math.random() - 0.5) * 0.02;
                 initialVelocities[i3 + 2] = -SMOKE_SPEED;
             }
-            
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
             geometry.setAttribute('initialVelocity', new THREE.BufferAttribute(initialVelocities, 3));
-
-            const material = new THREE.PointsMaterial({
-                size: 0.08, vertexColors: true, blending: THREE.NormalBlending, 
-                transparent: true, depthWrite: false, opacity: 0.5,
-                map: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/sprites/spark1.png')
-            });
-
+            const material = new THREE.PointsMaterial({ size: 0.08, vertexColors: true, blending: THREE.NormalBlending, transparent: true, depthWrite: false, opacity: 0.5, map: new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/sprites/spark1.png') });
             smokeParticles = new THREE.Points(geometry, material);
             smokeParticles.position.z = -0.1;
             scene.add(smokeParticles);
         }
-
         function animate() {
             const delta = clock.getDelta();
-
             if (flameParticles) {
                 const positions = flameParticles.geometry.attributes.position.array;
                 const velocities = flameParticles.geometry.attributes.initialVelocity.array;
@@ -232,7 +255,6 @@
                 }
                 flameParticles.geometry.attributes.position.needsUpdate = true;
             }
-
             if (smokeParticles) {
                 const positions = smokeParticles.geometry.attributes.position.array;
                 const velocities = smokeParticles.geometry.attributes.initialVelocity.array;
@@ -249,36 +271,41 @@
                 }
                 smokeParticles.geometry.attributes.position.needsUpdate = true;
             }
-
             renderer.render(scene, camera);
             requestAnimationFrame(animate);
         }
-
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
-
         init();
     </script>
     
-    <!-- This is the unchanged particles.js script for the foreground layer -->
+    <!-- --- PARTICLES.JS INITIALIZATION SCRIPT (Unchanged) --- -->
     <script>
-        particlesJS("particles-js-fg", {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#ffffff" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": true },
-                "size": { "value": 3, "random": true },
-                "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out" }
-            },
-            "interactivity": {
-                "events": { "onhover": { "enable": true, "mode": "repulse" } },
-                "modes": { "repulse": { "distance": 150, "duration": 0.4 } }
+        particlesJS("particles-js-fg", { "particles": { "number": { "value": 80, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true }, "size": { "value": 3, "random": true }, "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out" } }, "interactivity": { "events": { "onhover": { "enable": true, "mode": "repulse" } }, "modes": { "repulse": { "distance": 150, "duration": 0.4 } } } });
+    </script>
+    
+    <!-- --- UI AND AUDIO CONTROL SCRIPT (Unchanged) --- -->
+    <script>
+        const audio = document.getElementById('boydQuoteAudio');
+        const audioControl = document.getElementById('audio-controls');
+        const decisionPoint = document.getElementById('decisionPoint');
+        let hasInteracted = false;
+        function initialPlay() {
+            if (!hasInteracted) {
+                hasInteracted = true;
+                audio.play().then(() => { audioControl.classList.add('playing'); }).catch(error => { console.log('Autoplay was prevented by the browser.'); });
             }
-        });
+        }
+        function toggleAudio() {
+            if (!hasInteracted) { initialPlay(); return; }
+            if (audio.paused) { audio.play(); audioControl.classList.add('playing'); } 
+            else { audio.pause(); audioControl.classList.remove('playing'); }
+        }
+        decisionPoint.addEventListener('click', initialPlay, { once: true });
+        audioControl.addEventListener('click', toggleAudio);
     </script>
 </body>
 </html>
